@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "neat"
+version = "0.1.0"
+description = "Neat - small conference management system"
+authors = ["Mateusz Krainski <mateusz@krainski.eu>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^4.0.6"
+
+[tool.poetry.dev-dependencies]
+black = "^22.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
