@@ -1,5 +1,6 @@
+from django.http import HttpResponseNotFound, JsonResponse
 from django.shortcuts import render
-from django.templatetags.static import static
+from screens.models import PresentationSlot
 
 from presentations.models import Presentation
 
@@ -9,14 +10,27 @@ TEMPLATES = {
 }
 
 # Create your views here.
-def index(request, presentation_id, page=1):
+def index(request, presentation_id):
     presentation = Presentation.objects.get(id=presentation_id)
+    # TODO: make this more formal. For now we assume that there's only one slot
+    #   per presentation
+    slot = presentation.presentationslot_set.first()
     context = {
-        "page": page,
+        "slot": slot,
         "presentation": presentation,
     }
     return render(request, TEMPLATES[presentation.type], context)
 
 
-def test_drive(request):
-    return render(request, "screens/test-drive.html")
+def get_slot_page(request):
+    slot_id = request.GET.get("slot_id")
+
+    if not slot_id:
+        return HttpResponseNotFound("Missing slot parameter!")
+
+    try:
+        slot = PresentationSlot.objects.get(id=slot_id)
+    except PresentationSlot.DoesNotExist:
+        return HttpResponseNotFound("Presentation slot not found!")
+
+    return JsonResponse({"current_page": slot.current_page})

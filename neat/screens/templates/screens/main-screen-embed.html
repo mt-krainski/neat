@@ -3,7 +3,7 @@
         <style>
             .responsive-slides {
               position: relative;
-              padding-bottom: 56.25%; /* 16:9 Ratio */
+              padding-bottom: 0%; /* 16:9 Ratio */
               overflow: hidden;
             }
             .responsive-slides iframe {
@@ -18,10 +18,26 @@
               background: black;
             }
           </style>
+          <script>
+            const slot = {{ slot.id }};
+            var currentPageNumber = 0;
+            async function reloadPresentation(){
+              console.log("Checking page...")
+              const requestPageNumber = await fetch("{% url 'get-slot-page' %}?slot_id={{slot.id}}");
+              const pageNumber = (await requestPageNumber.json())["current_page"];
+              if (currentPageNumber === pageNumber) return;
+
+              const presentationFrame = document.getElementById("presentation-frame");
+              presentationFrame.src = "{{ presentation.embed_url }}?rm=minimal&slide=" + pageNumber;
+              currentPageNumber = pageNumber;
+            };
+
+            setInterval(reloadPresentation, 100);
+          </script>
     </head>
     <body>
         <div class="responsive-slides">
-        <iframe src="{{ presentation.embed_url }}?rm=minimal&slide={{slide}}"></iframe>
+        <iframe id="presentation-frame" src="{{ presentation.embed_url }}?rm=minimal&slide={{ slot.current_page }}"></iframe>
         </div>
     </body>
 </html>

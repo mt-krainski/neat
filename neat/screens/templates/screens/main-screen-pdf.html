@@ -2,6 +2,24 @@
 
 <html>
   <head>
+    <style>
+      .responsive-slides {
+        position: relative;
+        padding-bottom: 0%; /* 16:9 Ratio */
+        overflow: hidden;
+      }
+      .responsive-slides canvas {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        border: 0;
+        width: auto;
+        height: 99% !important;
+      }
+      body {
+        background: black;
+      }
+    </style>
     <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
     <script>
       // If absolute URL from the remote server is provided, configure the CORS
@@ -18,31 +36,40 @@
       var loadingTask = pdfjsLib.getDocument(url);
       loadingTask.promise.then(function(pdf) {
         console.log('PDF loaded');
-        
-        // Fetch the first page
-        var pageNumber = {{page}};
-        pdf.getPage(pageNumber).then(function(page) {
-          console.log('Page loaded');
-          
-          var scale = 1.5;
-          var viewport = page.getViewport({scale: scale});
+        var currentPageNumber = 0;
+        async function display_pdf(){
+          // Fetch the first page
+          const requestPageNumber = await fetch("{% url 'get-slot-page' %}?slot_id={{slot.id}}");
+          const pageNumber = (await requestPageNumber.json())["current_page"];
+          if (pageNumber === currentPageNumber) return;
+          currentPageNumber = pageNumber;
+          console.log(pageNumber)
+          pdf.getPage(pageNumber).then(function(page) {
+            console.log('Page loaded');
+            
+            var scale = 4;
+            var viewport = page.getViewport({scale: scale});
 
-          // Prepare canvas using PDF page dimensions
-          var canvas = document.getElementById('the-canvas');
-          var context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
+            // Prepare canvas using PDF page dimensions
+            var canvas = document.getElementById('the-canvas');
+            var context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-          // Render PDF page into canvas context
-          var renderContext = {
-            canvasContext: context,
-            viewport: viewport
-          };
-          var renderTask = page.render(renderContext);
-          renderTask.promise.then(function () {
-            console.log('Page rendered');
+            // Render PDF page into canvas context
+            var renderContext = {
+              canvasContext: context,
+              // Transparent background so that it doesn't flash white while loading
+              background: 'rgba(0,0,0,0)',
+              viewport: viewport
+            };
+            var renderTask = page.render(renderContext);
+            renderTask.promise.then(function () {
+              console.log("New page loaded");
+            });
           });
-        });
+        }
+        setInterval(display_pdf, 100);
       }, function (reason) {
         // PDF loading error
         console.error(reason);
@@ -55,6 +82,8 @@
     </style>
   </head>
   <body>
-    <canvas id="the-canvas" style="position: absolute; top: 0; bottom: 0; right: 0; left: 0; margin: 0; padding: 0; width:100%; height:100%; padding-left: 0; padding-right: 0; margin: auto; padding-top:0; padding-bottom:0; display: block;"></canvas>
+    <div class="responsive-slides">
+      <canvas id="the-canvas"></canvas>
+    </div>
   </body>
 </html>
