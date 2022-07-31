@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <style>
+            .responsive-slides {
+                position: relative;
+                padding-bottom: 0%; /* 16:9 Ratio */
+                overflow: hidden;
+                width: 50%;
+                height: 50%;
+            }
+            body {
+                background: black;
+            }
+            {% with "screens/"|add:presentation_type|add:"/style.css" as template %}
+            {% include template %}
+            {% endwith %}
+        </style>
+        {% with "screens/"|add:presentation_type|add:"/script.js" as template %}
+            {% include template %}
+        {% endwith %}
+    </head>
+    <body>
+        <div class="responsive-slides">
+            {% with "screens/"|add:presentation_type|add:"/presentation.html" as template %}
+                {% include template %}
+            {% endwith %}
+        </div>
+    </body>
+</html>

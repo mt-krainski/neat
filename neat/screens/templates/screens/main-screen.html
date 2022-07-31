@@ -1,16 +1,19 @@
 {% extends 'screens/main-screen-base.html' %}
+
 {% block style %}
   {% with "screens/"|add:presentation_type|add:"/style.css" as template %}
-  {% include template %}
+    {% include template %}
   {% endwith %}
 {% endblock %}
+
 {% block script %}
   {% with "screens/"|add:presentation_type|add:"/script.js" as template %}
-  {% include template %}
+    {% include template %}
   {% endwith %}
 {% endblock %}
+
 {% block responsive_slides %}
   {% with "screens/"|add:presentation_type|add:"/presentation.html" as template %}
-  {% include template %}
+    {% include template %}
   {% endwith %}
 {% endblock %}
