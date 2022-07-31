@@ -1,43 +1,33 @@
-<html>
-    <head>
-        <style>
-            .responsive-slides {
-              position: relative;
-              padding-bottom: 0%; /* 16:9 Ratio */
-              overflow: hidden;
-            }
-            .responsive-slides iframe {
-              display: block;
-              margin-left: auto;
-              margin-right: auto;
-              border: 0;
-              width: 99% !important;
-              height: 99% !important;
-            }
-            body {
-              background: black;
-            }
-          </style>
-          <script>
-            const slot = {{ slot.id }};
-            var currentPageNumber = 0;
-            async function reloadPresentation(){
-              console.log("Checking page...")
-              const requestPageNumber = await fetch("{% url 'get-slot-page' %}?slot_id={{slot.id}}");
-              const pageNumber = (await requestPageNumber.json())["current_page"];
-              if (currentPageNumber === pageNumber) return;
+{% extends 'screens/main-screen-base.html' %}
 
-              const presentationFrame = document.getElementById("presentation-frame");
-              presentationFrame.src = "{{ presentation.embed_url }}?rm=minimal&slide=" + pageNumber;
-              currentPageNumber = pageNumber;
-            };
+{% block style %}
+.responsive-slides iframe {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0;
+  width: 99% !important;
+  height: 99% !important;
+}
+{% endblock %}
+{% block script %}
+<script>
+  const slot = {{ slot.id }};
+  var currentPageNumber = 0;
+  async function reloadPresentation(){
+    console.log("Checking page...")
+    const requestPageNumber = await fetch("{% url 'get-slot-page' %}?slot_id={{slot.id}}");
+    const pageNumber = (await requestPageNumber.json())["current_page"];
+    if (currentPageNumber === pageNumber) return;
 
-            setInterval(reloadPresentation, 100);
-          </script>
-    </head>
-    <body>
-        <div class="responsive-slides">
-        <iframe id="presentation-frame" src="{{ presentation.embed_url }}?rm=minimal&slide={{ slot.current_page }}"></iframe>
-        </div>
-    </body>
-</html>
+    const presentationFrame = document.getElementById("presentation-frame");
+    presentationFrame.src = "{{ presentation.embed_url }}?rm=minimal&slide=" + pageNumber;
+    currentPageNumber = pageNumber;
+  };
+
+  setInterval(reloadPresentation, 100);
+</script>
+{% endblock %}
+{% block responsive_slides %}
+<iframe id="presentation-frame" src="{{ presentation.embed_url }}?rm=minimal&slide={{ slot.current_page }}"></iframe>
+{% endblock %}

@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <style>
+      .responsive-slides {
+        position: relative;
+        padding-bottom: 0%; /* 16:9 Ratio */
+        overflow: hidden;
+      }
+      
+      body {
+        background: black;
+      }
+      {% block style %}
+      {% endblock %}
+    </style>
+    {% block script %}
+    {% endblock %}
+  </head>
+  <body>
+    <div class="responsive-slides">
+      {% block responsive_slides %}
+      {% endblock %}
+    </div>
+  </body>
+</html>
