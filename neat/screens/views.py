@@ -18,8 +18,9 @@ def index(request, presentation_id):
     context = {
         "slot": slot,
         "presentation": presentation,
+        "presentation_type": presentation.get_type_display(),
     }
-    return render(request, TEMPLATES[presentation.type], context)
+    return render(request, "screens/main-screen.html", context)
 
 
 def get_slot_page(request):

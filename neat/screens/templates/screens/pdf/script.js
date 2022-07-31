@@ -1,18 +1,3 @@
-{% extends 'screens/main-screen-base.html' %}
-{% load static %}
-
-{% block style %}
-.responsive-slides canvas {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  border: 0;
-  width: auto;
-  height: 99% !important;
-}
-{% endblock %}
-
-{% block script %}
 <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
 <script>
   // If absolute URL from the remote server is provided, configure the CORS
@@ -68,9 +53,3 @@
     console.error(reason);
   });
 </script>
-{% endblock %}
-
-
-{% block responsive_slides %}
-<canvas id="the-canvas"></canvas>
-{% endblock %}
