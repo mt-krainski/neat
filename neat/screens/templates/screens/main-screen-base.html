@@ -15,6 +15,17 @@
     </style>
     {% block script %}
     {% endblock %}
+    <script>
+      // Get currently active slot. If it's different than the one for which this
+      //   template was generated, reload the page. Reloading the page will cause the
+      //   new (currently active) presentation to load.
+      setInterval(async () => {
+        const currentActiveSlot = await (await fetch("{% url 'get-active-slot' %}")).json();
+        if (currentActiveSlot.active_slot !== {{ slot.id }}) {
+          window.location.reload();
+        }
+      }, 1000);
+    </script>
   </head>
   <body>
     <div class="responsive-slides">
