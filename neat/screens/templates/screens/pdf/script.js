@@ -47,7 +47,8 @@
         });
       });
     }
-    setInterval(display_pdf, 100);
+    {% comment %} setInterval(display_pdf, 100); {% endcomment %}
+    {% comment %} display_pdf() {% endcomment %}
   }, function (reason) {
     // PDF loading error
     console.error(reason);

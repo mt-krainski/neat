@@ -18,6 +18,26 @@
         {% with "screens/"|add:presentation_type|add:"/script.js" as template %}
             {% include template %}
         {% endwith %}
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const button = document.getElementById('next-slide');
+                console.log(button)
+                button.addEventListener('click', async _ => {
+                    try {
+                      const response = await fetch('{% url "next-slide" %}', {
+                        method: 'post',
+                        body: {},
+                        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                      });
+                      console.log(response);
+                    } catch(err) {
+                      console.error(`Error: ${err}`);
+                    }
+                });
+            })
+        </script>
+
     </head>
     <body>
         <div class="responsive-slides">
@@ -25,5 +45,10 @@
                 {% include template %}
             {% endwith %}
         </div>
+
+        <div>
+            <button id="next-slide"> Next Slide </button>
+        </div>
+
     </body>
 </html>

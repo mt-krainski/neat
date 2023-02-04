@@ -11,4 +11,5 @@ urlpatterns = [
     ),
     path("get-slot-page", views.get_slot_page, name="get-slot-page"),
     path("get-active-slot", views.get_active_slot, name="get-active-slot"),
+    path("next-slide", views.next_slide, name="next-slide"),
 ]
